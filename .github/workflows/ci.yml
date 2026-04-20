@@ -21,3 +21,16 @@ jobs:
         format: 'table'
         exit-code: '1'       # 취약점이 발견되면 빌드를 실패시킴
         severity: 'CRITICAL'
+        
+    - name: Docker Hub 로그인
+      uses: docker login -u haepida
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Docker Hub로 push
+      run:
+        # 최신 버전임을 알리는 latest 태그도 같이 붙여서 푸쉬합니다
+        docker tage ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.sha }}
+        docker puch ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
